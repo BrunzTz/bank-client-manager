@@ -1,10 +1,10 @@
 # Bank Client Manager
 
-Sistema de gerenciamento de clientes bancários com arquitetura de micro frontends em Angular.
+Sistema de gerenciamento de clientes bancários com arquitetura de micro frontends em Angular com Native Federation.
 
 ## 📋 Visão Geral
 
-Projeto monorepo que implementa uma aplicação web modular utilizando **Module Federation (Native Federation)** com Angular 19. A arquitetura permite desenvolvimento independente de múltiplos módulos, cada um com seu próprio ciclo de vida e deploy.
+Projeto monorepo que implementa uma aplicação web modular utilizando **Native Federation** com Angular 19. A arquitetura permite desenvolvimento independente de múltiplos módulos, cada um com seu próprio ciclo de vida e deploy.
 
 ## 🏗️ Arquitetura
 
@@ -46,21 +46,23 @@ App Shell - Contenedor central da aplicação.
 ### 2. **MFE Client Query** (`/apps/mfe-client-query`)
 Micro frontend para consulta e listagem de clientes.
 
-- **Framework:** Angular 19 + PrimeNG
+- **Framework:** Angular 19
 - **Responsabilidades:**
   - Listar clientes
   - Consultar dados de clientes
-  - Filtros e busca
+  - Paginação
+  - Botões de ação
 - **Porta:** `4201`
 - **Comando:** `npm run start`
 
 ### 3. **MFE Client Management** (`/apps/mfe-client-management`)
 Micro frontend para gerenciamento completo de clientes.
 
-- **Framework:** Angular 19 + PrimeNG + ngx-mask
+- **Framework:** Angular 19 + ngx-mask
 - **Responsabilidades:**
   - Criar novos clientes
   - Editar dados de clientes
+  - Deletar dados de clientes
   - Validações de formulários
   - Mascaras de entrada
 - **Porta:** `4202`
@@ -86,10 +88,6 @@ API fake para desenvolvimento local.
 ### Instalação
 
 ```bash
-# Na raiz do projeto
-npm install
-
-# Em cada aplicação (opcional se usar npm workspaces)
 cd apps/front-shell && npm install
 cd apps/mfe-client-query && npm install
 cd apps/mfe-client-management && npm install
@@ -123,7 +121,7 @@ Acesse a aplicação em: http://localhost:4200
 cd apps/front-shell && npm run build
 cd apps/mfe-client-query && npm run build
 cd apps/mfe-client-management && npm run build
-cd apps/mock-api && npm run build # Se aplicável
+cd apps/mock-api && npm run build
 ```
 
 ## 🧪 Testes
@@ -167,7 +165,7 @@ src/
 ## 🔧 Tecnologias Principais
 
 - **Frontend:** Angular 19, TypeScript, RxJS
-- **UI Components:** PrimeNG 19
+- **UI Components:** SCSS Puro
 - **Module Federation:** Native Federation + Softarc
 - **Backend:** Express.js, Node.js
 - **Validação:** ngx-mask
@@ -191,7 +189,8 @@ Compartilhamento de modelos através de serviços centralizados:
 - Componentes em PascalCase
 - Serviços com sufixo `.service.ts`
 - Modelos de dados com sufixo `.model.ts`
-- Módulos com sufixo `.module.ts` (quando aplicável)
+- Componentes com sufixo `.component.ts`
+- HTML com sufixo `.component.html`
 - Testes com sufixo `.spec.ts`
 
 ## 📄 Licença
@@ -200,4 +199,4 @@ ISC
 
 ## ✍️ Autores
 
-Desenvolvido como solução de micro frontends em Angular.
+Desenvolvido como solução de micro frontends em Angular utilizando o Native Fedaration.
