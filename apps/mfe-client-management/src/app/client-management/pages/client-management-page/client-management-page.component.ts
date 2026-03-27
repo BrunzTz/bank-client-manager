@@ -1,31 +1,32 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
+import { Router } from '@angular/router';
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { ClientService } from '../../../core/services/client.service';
 import { Client } from '../../../core/models/client.model';
 
-type ManagementAction = 'create' | 'edit' | 'delete';
+type ManagementAction = 'create' | 'edit' | 'delete' | 'query';
+
+interface ClientManagementEventPayload {
+  action: ManagementAction;
+  clientId?: string | null;
+  feedbackMessage?: string;
+  feedbackType?: 'success' | 'error';
+}
+
+const CLIENT_MANAGEMENT_EVENT = 'client-management-action';
 
 @Component({
   selector: 'app-client-management-page',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    InputTextModule,
-    ButtonModule,
-    SelectModule
-  ],
+  imports: [CommonModule, ReactiveFormsModule, NgxMaskDirective],
+  providers: [provideNgxMask()],
   templateUrl: './client-management-page.component.html',
   styleUrl: './client-management-page.component.scss'
 })
 export class ClientManagementPageComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
-  private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly clientService = inject(ClientService);
 
@@ -40,6 +41,9 @@ export class ClientManagementPageComponent implements OnInit {
   client: Client | null = null;
   loading = false;
   submitting = false;
+  pageTitle = 'Novo Cliente';
+  pageDescription = 'Preencha os dados para cadastrar um novo cliente.';
+  primaryButtonLabel = 'Criar Cliente';
 
   form = this.fb.group({
     companyName: ['', [Validators.required]],
@@ -50,32 +54,40 @@ export class ClientManagementPageComponent implements OnInit {
     status: ['ACTIVE', [Validators.required]]
   });
 
-  ngOnInit(): void {
-    this.route.queryParamMap.subscribe((params) => {
-      const action = params.get('action');
-      const id = params.get('id');
+  setClientManagementAction(payload: ClientManagementEventPayload): void {
+    console.log('[ClientManagementPage] setClientManagementAction', payload);
 
-      if (action === 'create' || action === 'edit' || action === 'delete') {
-        this.mode = action;
-      } else {
-        this.mode = 'create';
-      }
+    if (!payload || !payload.action) {
+      return;
+    }
 
-      this.clientId = id;
+    this.mode = payload.action;
+    this.clientId = payload.clientId ?? null;
 
-      if (this.mode === 'create') {
-        this.client = null;
-        this.resetForm();
-        return;
-      }
+    if (this.mode === 'create') {
+      this.client = null;
+      this.resetForm();
+      return;
+    }
 
+    if (this.mode === 'edit' || this.mode === 'delete') {
       if (!this.clientId) {
         console.error('ID do cliente não informado.');
         return;
       }
-
       this.loadClient(this.clientId);
-    });
+      if (this.mode === 'delete') {
+        this.form.disable();
+      }
+      this.pageTitle = this.setPageTitle();
+      this.pageDescription = this.setPageDescription();
+      this.primaryButtonLabel = this.setPrimaryButtonLabel();
+      return;
+    }
+  }
+
+  ngOnInit(): void {
+    this.resetForm();
   }
 
   loadClient(id: string): void {
@@ -85,13 +97,11 @@ export class ClientManagementPageComponent implements OnInit {
       next: (client) => {
         this.client = client;
         this.patchForm(client);
-
         if (this.mode === 'delete') {
           this.form.disable();
         } else {
           this.form.enable();
         }
-
         this.loading = false;
       },
       error: (error) => {
@@ -125,11 +135,6 @@ export class ClientManagementPageComponent implements OnInit {
   }
 
   submit(): void {
-    if (this.mode === 'delete') {
-      this.confirmDelete();
-      return;
-    }
-
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
@@ -146,9 +151,15 @@ export class ClientManagementPageComponent implements OnInit {
 
     this.submitting = true;
 
+    console.log('Payload a ser enviado:', payload);
+    console.log('Modo atual:', this.mode);
+
     if (this.mode === 'create') {
       this.clientService.createClient(payload).subscribe({
-        next: () => this.navigateBackToQuery(),
+        next: () => {
+          // Feedback será exibido na lista através do evento dispatched
+          this.navigateBackToQuery('Cliente criado com sucesso!', 'success');
+        },
         error: (error) => {
           console.error('Erro ao criar cliente:', error);
           this.submitting = false;
@@ -159,24 +170,31 @@ export class ClientManagementPageComponent implements OnInit {
 
     if (this.mode === 'edit' && this.clientId) {
       this.clientService.updateClient(this.clientId, payload).subscribe({
-        next: () => this.navigateBackToQuery(),
+        next: () => {
+          this.navigateBackToQuery('Cliente atualizado com sucesso!', 'success');
+        },
         error: (error) => {
           console.error('Erro ao editar cliente:', error);
           this.submitting = false;
         }
       });
+      return;
+    }
+
+    if (this.mode === 'delete' && this.clientId) {
+      this.confirmDelete();
     }
   }
 
   confirmDelete(): void {
-    if (!this.clientId) {
-      return;
-    }
-
+    console.log('Confirmando exclusão do cliente com ID:', this.clientId);
+    if (!this.clientId) return;
+    console.log('Confirmando exclusão do cliente com ID:', this.clientId);
     this.submitting = true;
-
     this.clientService.deleteClient(this.clientId).subscribe({
-      next: () => this.navigateBackToQuery(),
+      next: () => {
+        this.navigateBackToQuery('Cliente excluído com sucesso!', 'success');
+      },
       error: (error) => {
         console.error('Erro ao excluir cliente:', error);
         this.submitting = false;
@@ -184,31 +202,49 @@ export class ClientManagementPageComponent implements OnInit {
     });
   }
 
-  navigateBackToQuery(): void {
+  navigateBackToQuery(feedbackMessage?: string, feedbackType?: 'success' | 'error'): void {
+    console.log('Navegando de volta para a tela de consulta...');
     this.submitting = false;
-    this.router.navigate(['/home']);
+    const detail: any = { action: 'query' };
+
+    if (feedbackMessage) {
+      detail.feedbackMessage = feedbackMessage;
+      detail.feedbackType = feedbackType ?? 'success';
+    }
+
+    window.dispatchEvent(
+      new CustomEvent(CLIENT_MANAGEMENT_EVENT, {
+        detail
+      })
+    );
   }
 
   cancel(): void {
     this.navigateBackToQuery();
   }
 
-  getPageTitle(): string {
+  ngOnDestroy(): void {
+  }
+
+  setPageTitle(): string {
     if (this.mode === 'create') return 'Novo Cliente';
     if (this.mode === 'edit') return 'Editar Cliente';
-    return 'Excluir Cliente';
+    if (this.mode === 'delete') return 'Excluir Cliente';
+    return 'Cliente';
   }
 
-  getPageDescription(): string {
+  setPageDescription(): string {
     if (this.mode === 'create') return 'Preencha os dados para cadastrar um novo cliente.';
     if (this.mode === 'edit') return 'Atualize as informações do cliente selecionado.';
-    return 'Confirme a exclusão do cliente selecionado.';
+    if (this.mode === 'delete') return 'Confirme a exclusão do cliente. Esta ação não pode ser desfeita.';
+    return '';
   }
 
-  getPrimaryButtonLabel(): string {
+  setPrimaryButtonLabel(): string {
     if (this.mode === 'create') return 'Criar Cliente';
     if (this.mode === 'edit') return 'Salvar Alterações';
-    return 'Confirmar Exclusão';
+    if (this.mode === 'delete') return 'Confirmar Exclusão';
+    return 'Salvar';
   }
 
   hasError(controlName: string, errorName: string): boolean {

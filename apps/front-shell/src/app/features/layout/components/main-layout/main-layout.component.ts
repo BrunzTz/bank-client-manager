@@ -13,6 +13,15 @@ import { MicroFrontendService } from '../../../../core/services/micro-frontend/m
 
 type ActiveScreen = 'query' | 'management';
 
+type ManagementAction = 'create' | 'edit' | 'delete' | 'query';
+
+interface ClientManagementEventPayload {
+  action: ManagementAction;
+  clientId?: string | null;
+}
+
+const CLIENT_MANAGEMENT_EVENT = 'client-management-action';
+
 @Component({
   selector: 'app-main-layout',
   templateUrl: './main-layout.component.html',
@@ -26,11 +35,58 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   dynamicHost!: ViewContainerRef;
 
   private currentComponentRef: ComponentRef<any> | null = null;
-  private activeScreen: ActiveScreen = 'query';
+  activeScreen: ActiveScreen = 'query';
 
   constructor(private microFrontendService: MicroFrontendService) {}
 
+  private pendingClientManagementEvent: ClientManagementEventPayload | null = null;
+
+  private applyPendingEventToManagement(): void {
+    if (!this.pendingClientManagementEvent || !this.currentComponentRef) {
+      return;
+    }
+
+    const componentInstance: any = this.currentComponentRef.instance;
+
+    if (typeof componentInstance.setClientManagementAction === 'function') {
+      componentInstance.setClientManagementAction(this.pendingClientManagementEvent);
+      this.currentComponentRef.changeDetectorRef.detectChanges();
+    }
+
+    this.pendingClientManagementEvent = null;
+  }
+
+  private handleClientManagementEvent = (event: Event): void => {
+    const customEvent = event as CustomEvent<ClientManagementEventPayload>;
+    const detail = customEvent.detail;
+
+    if (!detail || !detail.action) {
+      return;
+    }
+
+    if (detail.action === 'query') {
+      this.showQuery();
+      return;
+    }
+
+    if (detail.action === 'delete') {
+      this.pendingClientManagementEvent = detail;
+      this.showManagement();
+      return;
+    }
+
+    this.pendingClientManagementEvent = detail;
+
+    if (this.activeScreen === 'management') {
+      this.applyPendingEventToManagement();
+      return;
+    }
+
+    this.showManagement();
+  };
+
   async ngOnInit(): Promise<void> {
+    window.addEventListener(CLIENT_MANAGEMENT_EVENT, this.handleClientManagementEvent);
     await this.renderScreen('query');
   }
 
@@ -75,6 +131,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
         this.currentComponentRef = this.dynamicHost.createComponent(
           managementModule.ClientManagementPageComponent
         );
+
+        this.applyPendingEventToManagement();
       }
 
       this.currentComponentRef?.changeDetectorRef.detectChanges();
@@ -90,6 +148,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    window.removeEventListener(CLIENT_MANAGEMENT_EVENT, this.handleClientManagementEvent);
     this.currentComponentRef?.destroy();
   }
 }

@@ -6,9 +6,21 @@
     </div>
 
     <nav class="menu">
-      <button type="button" (click)="showQuery()">Consulta</button>
-      <button type="button" (click)="showManagement()">Novo cliente</button>
-      <button type="button" (click)="logout()">Sair</button>
+      <button
+        type="button"
+        [class.active-screen]="activeScreen === 'query'"
+        (click)="showQuery()"
+      >
+        Consulta
+      </button>
+      <button
+        type="button"
+        [class.active-screen]="activeScreen === 'management'"
+        (click)="showManagement()"
+      >
+        Novo cliente
+      </button>
+      <button type="button" class="logout" (click)="logout()">Sair</button>
     </nav>
   </aside>
 

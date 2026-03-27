@@ -10,10 +10,6 @@ module.exports = withNativeFederation({
     'rxjs/ajax',
     'rxjs/fetch',
     'rxjs/testing',
-    'rxjs/webSocket',
-    'primeng',
-    'primeicons',
-    /^primeng\//,
-    '@angular/cdk'
+    'rxjs/webSocket'
   ]
 });

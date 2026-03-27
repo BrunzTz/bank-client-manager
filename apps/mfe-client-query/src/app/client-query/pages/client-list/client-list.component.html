@@ -1,73 +1,71 @@
 <section class="client-list-page">
+  <div class="feedback-popover" *ngIf="feedbackVisible" [ngClass]="feedbackType">
+    <span>{{ feedbackMessage }}</span>
+    <button type="button" (click)="feedbackVisible = false">×</button>
+  </div>
+
   <div class="page-header">
     <div>
       <h1>Consulta de Clientes</h1>
       <p>Visualização de clientes PJ cadastrados no sistema.</p>
     </div>
 
-    <p-button
-      label="Novo cliente"
-      icon="pi pi-plus"
-      (onClick)="goToCreate()"
-    />
+    <button class="btn btn-primary" (click)="goToCreate()">+ Novo cliente</button>
   </div>
 
-  <p-table
-    [value]="clients"
-    [paginator]="true"
-    [rows]="10"
-    [loading]="loading"
-    [tableStyle]="{ 'min-width': '80rem' }"
-    responsiveLayout="scroll"
-  >
-    <ng-template pTemplate="header">
-      <tr>
-        <th>Razão Social</th>
-        <th>Nome Fantasia</th>
-        <th>CNPJ</th>
-        <th>Email</th>
-        <th>Telefone</th>
-        <th>Status</th>
-        <th>Data de Criação</th>
-        <th>Ações</th>
-      </tr>
-    </ng-template>
+  <div *ngIf="loading" class="loader">Carregando clientes...</div>
 
-    <ng-template pTemplate="body" let-client>
-      <tr>
-        <td>{{ client.companyName }}</td>
-        <td>{{ client.tradeName }}</td>
-        <td>{{ client.cnpj }}</td>
-        <td>{{ client.email }}</td>
-        <td>{{ client.phone }}</td>
-        <td>
-          <p-tag
-            [value]="getStatusLabel(client.status)"
-            [severity]="getSeverity(client.status)"
-          />
-        </td>
-        <td>{{ client.createdAt | date:'dd/MM/yyyy' }}</td>
-        <td class="actions">
-          <p-button
-            icon="pi pi-pencil"
-            severity="secondary"
-            [text]="true"
-            (onClick)="goToEdit(client.id)"
-          />
-          <p-button
-            icon="pi pi-trash"
-            severity="danger"
-            [text]="true"
-            (onClick)="goToDelete(client.id)"
-          />
-        </td>
-      </tr>
-    </ng-template>
+  <div *ngIf="!loading">
+    <div class="pagination-header" *ngIf="clients.length > 0">
+      <span>Mostrando {{ showingFrom }} - {{ showingTo }} de {{ clients.length }}</span>
+      <div class="pagination-controls">
+        <button class="btn btn-secondary" (click)="previousPage()" [disabled]="page === 1">Anterior</button>
+        <button
+          class="btn btn-secondary"
+          *ngFor="let num of pages"
+          [class.active]="num === page"
+          (click)="setPage(num)"
+        >
+          {{ num }}
+        </button>
+        <button class="btn btn-secondary" (click)="nextPage()" [disabled]="page === totalPages">Próximo</button>
+      </div>
+    </div>
 
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td colspan="8">Nenhum cliente encontrado.</td>
-      </tr>
-    </ng-template>
-  </p-table>
+    <table class="client-table">
+      <thead>
+        <tr>
+          <th>Razão Social</th>
+          <th>Nome Fantasia</th>
+          <th>CNPJ</th>
+          <th>Email</th>
+          <th>Telefone</th>
+          <th>Status</th>
+          <th>Data de Criação</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let client of pagedClients">
+          <td>{{ client.companyName }}</td>
+          <td>{{ client.tradeName }}</td>
+          <td>{{ client.cnpj }}</td>
+          <td>{{ client.email }}</td>
+          <td>{{ client.phone }}</td>
+          <td>
+            <span [ngClass]="{'status-active': client.status === 'ACTIVE', 'status-inactive': client.status !== 'ACTIVE'}">
+              {{ getStatusLabel(client.status) }}
+            </span>
+          </td>
+          <td>{{ client.createdAt | date:'dd/MM/yyyy' }}</td>
+          <td class="actions">
+            <button class="btn btn-secondary" (click)="goToEdit(client.id)">Editar</button>
+            <button class="btn btn-danger" (click)="goToDelete(client.id)">Excluir</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="clients.length === 0" class="empty-state">Nenhum cliente encontrado.</div>
+  </div>
 </section>

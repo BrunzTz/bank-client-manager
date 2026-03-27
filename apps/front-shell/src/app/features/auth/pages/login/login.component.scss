@@ -255,6 +255,29 @@
   border-radius: 2px;
 }
 
+.input-block input.invalid {
+	border-color: #e74c3c;
+	background: #ffecec;
+}
+
+.error-message {
+	color: #e74c3c;
+	font-size: 12px;
+	margin-top: 4px;
+}
+
+.success-message {
+	color: #2b8a3e;
+	font-size: 12px;
+	margin-top: 4px;
+}
+
+.info-message {
+	color: #205081;
+	font-size: 13px;
+	margin-top: 5px;
+}
+
 .form [type='submit'] {
 	opacity: 0;
 	display: block;

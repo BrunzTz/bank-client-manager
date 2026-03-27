@@ -7,19 +7,27 @@
           Login
           <span class="underline"></span>
         </button>
-        <form class="form form-login" [formGroup]="form" (ngSubmit)="submit()">
+        <form class="form form-login" [formGroup]="loginForm" (ngSubmit)="submit()">
           <fieldset>
             <legend>Please, enter your email and password for login.</legend>
             <div class="input-block">
               <label for="login-email">E-mail</label>
-              <input id="login-email" type="email" formControlName="username">
+              <input id="login-email" type="email" formControlName="username" [class.invalid]="hasError('username', 'required', false) || hasError('username', 'email', false)">
+              <p class="error-message" *ngIf="hasError('username', 'required', false)">E-mail é obrigatório.</p>
+              <p class="error-message" *ngIf="hasError('username', 'email', false)">E-mail inválido.</p>
             </div>
             <div class="input-block">
               <label for="login-password">Password</label>
-              <input id="login-password" type="password" formControlName="password">
+              <input id="login-password" type="password" formControlName="password" [class.invalid]="hasError('password', 'required', false) || hasError('password', 'minlength', false)">
+              <p class="error-message" *ngIf="hasError('password', 'required', false)">Senha é obrigatória.</p>
+              <p class="error-message" *ngIf="hasError('password', 'minlength', false)">Senha deve ter pelo menos 6 caracteres.</p>
             </div>
           </fieldset>
-          <button type="submit" class="btn-login">Login</button>
+
+          <p class="error-message" *ngIf="invalidCredentials && errorMessage">{{ errorMessage }}</p>
+          <p class="info-message" *ngIf="isLoading">Autenticando, aguarde...</p>
+
+          <button type="submit" class="btn-login" [disabled]="isLoading">{{ isLoading ? 'Entrando...' : 'Login' }}</button>
         </form>
       </div>
       <div class="form-wrapper">
@@ -27,23 +35,33 @@
           Sign Up
           <span class="underline"></span>
         </button>
-        <form class="form form-signup">
+        <form class="form form-signup" [formGroup]="signUpForm" (ngSubmit)="signUp()">
           <fieldset>
             <legend>Please, enter your email, password and password confirmation for sign up.</legend>
             <div class="input-block">
               <label for="signup-email">E-mail</label>
-              <input id="signup-email" type="email" required>
+              <input id="signup-email" type="email" formControlName="username" [class.invalid]="hasError('username', 'required', true) || hasError('username', 'email', true)">
+              <p class="error-message" *ngIf="hasError('username', 'required', true)">E-mail é obrigatório.</p>
+              <p class="error-message" *ngIf="hasError('username', 'email', true)">E-mail inválido.</p>
             </div>
             <div class="input-block">
               <label for="signup-password">Password</label>
-              <input id="signup-password" type="password" required>
+              <input id="signup-password" type="password" formControlName="password" [class.invalid]="hasError('password', 'required', true) || hasError('password', 'minlength', true)">
+              <p class="error-message" *ngIf="hasError('password', 'required', true)">Senha é obrigatória.</p>
+              <p class="error-message" *ngIf="hasError('password', 'minlength', true)">Senha deve ter pelo menos 6 caracteres.</p>
             </div>
             <div class="input-block">
               <label for="signup-password-confirm">Confirm password</label>
-              <input id="signup-password-confirm" type="password" required>
+              <input id="signup-password-confirm" type="password" formControlName="confirmPassword" [class.invalid]="hasError('confirmPassword', 'required', true)">
+              <p class="error-message" *ngIf="hasError('confirmPassword', 'required', true)">Confirmação de senha é obrigatória.</p>
             </div>
           </fieldset>
-          <button type="submit" class="btn-signup">Continue</button>
+
+          <p class="error-message" *ngIf="errorMessage && !invalidCredentials">{{ errorMessage }}</p>
+          <p class="success-message" *ngIf="successMessage">{{ successMessage }}</p>
+          <p class="info-message" *ngIf="isLoading">Processando, aguarde...</p>
+
+          <button type="submit" class="btn-signup" [disabled]="isLoading">{{ isLoading ? 'Aguarde...' : 'Continue' }}</button>
         </form>
       </div>
     </div>

@@ -25,3 +25,154 @@
   display: flex;
   gap: 8px;
 }
+
+.btn {
+  border: 0;
+  border-radius: 6px;
+  padding: 0.5rem 0.9rem;
+  cursor: pointer;
+  font-weight: 600;
+  color: #fff;
+  transition: all 0.18s ease;
+}
+
+.btn:hover {
+  filter: brightness(1.05);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #4f46e5, #2563eb);
+}
+
+.btn-secondary {
+  background-color: #6b7280;
+}
+
+.btn-danger {
+  background-color: #dc2626;
+}
+
+.client-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.client-table th,
+.client-table td {
+  padding: 0.9rem 0.8rem;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.client-table th {
+  background: #f3f4f6;
+  color: #111827;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.client-table tbody tr:nth-child(odd) {
+  background: #fafafa;
+}
+
+.status-active,
+.status-inactive {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 0.24rem 0.64rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.status-active {
+  background-color: #16a34a;
+}
+
+.status-inactive {
+  background-color: #d97706;
+}
+
+.loader,
+.empty-state {
+  margin: 16px 0;
+  color: #334155;
+  font-size: 1rem;
+}
+
+.pagination-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pagination-controls .btn {
+  padding: 0.38rem 0.65rem;
+  font-size: 0.85rem;
+}
+
+.pagination-controls .active {
+  background-color: #1d4ed8;
+}
+
+@media (max-width: 960px) {
+  .client-table {
+    display: block;
+    overflow-x: auto;
+    min-width: 900px;
+  }
+}
+
+.feedback-popover {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 10000;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 14px;
+  box-shadow: 0 12px 25px rgba(15, 23, 42, 0.2);
+  min-width: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border: 1px solid #d6d3d1;
+}
+
+.feedback-popover.success {
+  background: #def7ec;
+  color: #0f5132;
+  border-color: #a7f3d0;
+}
+
+.feedback-popover.error {
+  background: #fee2e2;
+  color: #7f1d1d;
+  border-color: #fca5a5;
+}
+
+.feedback-popover button {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  font-weight: 700;
+  padding: 0;
+}
