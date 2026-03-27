@@ -1,0 +1,4 @@
+{
+	"mfeClientQuery": "http://localhost:4201/remoteEntry.json",
+  	"mfeClientManagement": "http://localhost:4202/remoteEntry.json"
+}

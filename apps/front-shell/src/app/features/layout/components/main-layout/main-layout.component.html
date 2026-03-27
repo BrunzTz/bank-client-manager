@@ -1,0 +1,30 @@
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <h2>Bank Client Manager</h2>
+      <p>Pensando no seu futuro</p>
+    </div>
+
+    <nav class="menu">
+      <button
+        type="button"
+        [class.active-screen]="activeScreen === 'query'"
+        (click)="showQuery()"
+      >
+        Consulta
+      </button>
+      <button
+        type="button"
+        [class.active-screen]="activeScreen === 'management'"
+        (click)="showManagement()"
+      >
+        Novo cliente
+      </button>
+      <button type="button" class="logout" (click)="logout()">Sair</button>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <ng-container #dynamicHost></ng-container>
+  </main>
+</div>
