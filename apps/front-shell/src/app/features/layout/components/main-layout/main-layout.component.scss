@@ -1,0 +1,112 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 260px;
+  min-width: 260px;
+  background: linear-gradient(160deg, #0f172a 0%, #1e3a5f 100%);
+  color: #e2e8f0;
+  padding: 24px 18px;
+  box-sizing: border-box;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 3px 0 20px rgba(15, 23, 42, 0.15);
+}
+
+.brand {
+  margin-bottom: 26px;
+}
+
+.brand h2 {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.brand p {
+  margin-top: 4px;
+  font-size: 0.84rem;
+  color: #94a3b8;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.menu button {
+  width: 100%;
+  padding: 12px 14px;
+  text-align: left;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: rgba(226, 232, 240, 0.08);
+  color: #f8fafc;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease, color 0.2s ease;
+}
+
+.menu button:hover {
+  background: rgba(255, 255, 255, 0.16);
+  transform: translateY(-1px);
+}
+
+.menu button.active-screen {
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+  border-color: rgba(148, 163, 184, 0.5);
+  box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.46);
+}
+
+.menu button.logout {
+  margin-top: 14px;
+  background: #ef4444;
+  border-color: transparent;
+  color: #fff;
+}
+
+.menu button.logout:hover {
+  background: #dc2626;
+}
+
+
+.content {
+  flex: 1;
+  padding: 24px;
+  box-sizing: border-box;
+  overflow-x: auto;
+  background: #f6f8fb;
+}
+
+.content > div {
+  width: 100%;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  min-height: 92vh;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 980px) {
+  .layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    min-width: 0;
+    border-radius: 0 0 12px 12px;
+  }
+
+  .content > div {
+    min-height: auto;
+  }
+}

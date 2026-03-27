@@ -1,0 +1,132 @@
+.client-management-page {
+  padding: 24px;
+  max-width: 900px;
+}
+
+.page-header {
+  margin-bottom: 24px;
+
+  h1 {
+    margin: 0 0 8px;
+    font-size: 28px;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 0;
+    color: #666;
+  }
+}
+
+.client-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.input-field {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input-field:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.error-message {
+  color: #dc2626;
+  font-size: 12px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.full-width-actions {
+  grid-column: 1 / -1;
+}
+
+.btn {
+  border: 0;
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  min-width: 130px;
+  transition: background-color 0.2s ease, transform 0.14s ease;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: linear-gradient(130deg, #2563eb, #1d4ed8);
+  color: #fff;
+}
+
+.btn-secondary {
+  background: #6b7280;
+  color: #fff;
+}
+
+.btn-danger {
+  background: #dc2626;
+  color: #fff;
+}
+
+.state-box {
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.delete-mode .alert-box {
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  padding: 16px;
+  border-radius: 10px;
+  color: #92400e;
+  margin-bottom: 16px;
+}
+
+.delete-mode .client-info {
+  background: #f9fafb;
+  border: 1px solid #ddd6fe;
+  border-radius: 10px;
+  padding: 18px;
+  margin-bottom: 24px;
+}
+
+.delete-mode .client-info p {
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.delete-mode .client-info p:last-child {
+  margin-bottom: 0;
+}
+
+
+
