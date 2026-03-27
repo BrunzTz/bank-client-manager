@@ -1,0 +1,40 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 260px;
+  min-width: 260px;
+  background: #1e3a5f;
+  color: #fff;
+  padding: 24px 16px;
+  box-sizing: border-box;
+}
+
+.brand {
+  margin-bottom: 24px;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.menu button {
+  width: 100%;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.content {
+  flex: 1;
+  padding: 24px;
+  box-sizing: border-box;
+  overflow-x: auto;
+}
+
+.content > div {
+  width: 100%;
+}

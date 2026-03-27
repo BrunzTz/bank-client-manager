@@ -1,0 +1,73 @@
+<section class="client-list-page">
+  <div class="page-header">
+    <div>
+      <h1>Consulta de Clientes</h1>
+      <p>Visualização de clientes PJ cadastrados no sistema.</p>
+    </div>
+
+    <p-button
+      label="Novo cliente"
+      icon="pi pi-plus"
+      (onClick)="goToCreate()"
+    />
+  </div>
+
+  <p-table
+    [value]="clients"
+    [paginator]="true"
+    [rows]="10"
+    [loading]="loading"
+    [tableStyle]="{ 'min-width': '80rem' }"
+    responsiveLayout="scroll"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Razão Social</th>
+        <th>Nome Fantasia</th>
+        <th>CNPJ</th>
+        <th>Email</th>
+        <th>Telefone</th>
+        <th>Status</th>
+        <th>Data de Criação</th>
+        <th>Ações</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-client>
+      <tr>
+        <td>{{ client.companyName }}</td>
+        <td>{{ client.tradeName }}</td>
+        <td>{{ client.cnpj }}</td>
+        <td>{{ client.email }}</td>
+        <td>{{ client.phone }}</td>
+        <td>
+          <p-tag
+            [value]="getStatusLabel(client.status)"
+            [severity]="getSeverity(client.status)"
+          />
+        </td>
+        <td>{{ client.createdAt | date:'dd/MM/yyyy' }}</td>
+        <td class="actions">
+          <p-button
+            icon="pi pi-pencil"
+            severity="secondary"
+            [text]="true"
+            (onClick)="goToEdit(client.id)"
+          />
+          <p-button
+            icon="pi pi-trash"
+            severity="danger"
+            [text]="true"
+            (onClick)="goToDelete(client.id)"
+          />
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="8">Nenhum cliente encontrado.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</section>

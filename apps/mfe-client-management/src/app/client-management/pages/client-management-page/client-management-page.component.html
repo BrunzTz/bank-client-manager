@@ -1,0 +1,110 @@
+<section class="client-management-page">
+  <div class="page-header">
+    <h1>{{ getPageTitle() }}</h1>
+    <p>{{ getPageDescription() }}</p>
+  </div>
+
+  @if (loading) {
+    <div class="state-box">
+      <p>Carregando cliente...</p>
+    </div>
+  } @else if (mode === 'delete') {
+    <div class="delete-container">
+      <div class="state-box">
+        <p><strong>Razão social:</strong> {{ client?.companyName }}</p>
+        <p><strong>Nome fantasia:</strong> {{ client?.tradeName }}</p>
+        <p><strong>CNPJ:</strong> {{ client?.cnpj }}</p>
+        <p><strong>Email:</strong> {{ client?.email }}</p>
+        <p><strong>Telefone:</strong> {{ client?.phone }}</p>
+        <p><strong>Status:</strong> {{ client?.status }}</p>
+      </div>
+
+      <div class="actions">
+        <p-button
+          label="Cancelar"
+          severity="secondary"
+          [text]="true"
+          (onClick)="cancel()"
+        />
+        <p-button
+          label="Confirmar exclusão"
+          severity="danger"
+          [loading]="submitting"
+          (onClick)="confirmDelete()"
+        />
+      </div>
+    </div>
+  } @else {
+    <form [formGroup]="form" class="client-form">
+      <div class="form-field">
+        <label for="companyName">Razão Social</label>
+        <input id="companyName" pInputText formControlName="companyName" />
+        @if (hasError('companyName', 'required')) {
+          <small class="error-message">Campo obrigatório.</small>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="tradeName">Nome Fantasia</label>
+        <input id="tradeName" pInputText formControlName="tradeName" />
+        @if (hasError('tradeName', 'required')) {
+          <small class="error-message">Campo obrigatório.</small>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="cnpj">CNPJ</label>
+        <input id="cnpj" pInputText formControlName="cnpj" />
+        @if (hasError('cnpj', 'required')) {
+          <small class="error-message">Campo obrigatório.</small>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="email">Email</label>
+        <input id="email" pInputText formControlName="email" />
+        @if (hasError('email', 'required')) {
+          <small class="error-message">Campo obrigatório.</small>
+        }
+        @if (hasError('email', 'email')) {
+          <small class="error-message">Email inválido.</small>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="phone">Telefone</label>
+        <input id="phone" pInputText formControlName="phone" />
+        @if (hasError('phone', 'required')) {
+          <small class="error-message">Campo obrigatório.</small>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="status">Status</label>
+        <p-select
+          inputId="status"
+          [options]="statusOptions"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Selecione um status"
+          formControlName="status"
+          styleClass="w-full"
+        />
+      </div>
+    </form>
+
+    <div class="actions">
+      <p-button
+        label="Cancelar"
+        severity="secondary"
+        [text]="true"
+        (onClick)="cancel()"
+      />
+      <p-button
+        [label]="getPrimaryButtonLabel()"
+        [loading]="submitting"
+        (onClick)="submit()"
+      />
+    </div>
+  }
+</section>
